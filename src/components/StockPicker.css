@@ -8,18 +8,22 @@ body {
 /* Color Palette */
 :root {
   --primary-color: #007bff;
+  --secondary-color: #0056b3;
   --text-color: #333;
   --background-color: #f7f7f7;
 }
 
+/* Stock Picker Container */
 .stock-picker {
-  margin-top: 20px;
+  margin: 20px auto;
   padding: 20px;
-  /*background-color: var(--background-color);
+  background-color: var(--background-color);
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;*/
+  border-radius: 8px;
+  max-width: 600px;
 }
 
+/* Search Bar */
 .search-bar {
   display: flex;
   align-items: center;
@@ -31,6 +35,12 @@ body {
   border: 1px solid #ccc;
   border-radius: 4px;
   flex-grow: 1;
+  transition: border-color 0.3s ease;
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: var(--primary-color);
 }
 
 .search-bar button {
@@ -45,9 +55,10 @@ body {
 }
 
 .search-bar button:hover {
-  background-color: #0056b3;
+  background-color: var(--secondary-color);
 }
 
+/* Autocomplete List */
 .autocomplete-list {
   list-style: none;
   padding: 0;
@@ -64,6 +75,8 @@ body {
   transition: background-color 0.3s ease;
   border-bottom: 1px solid #ccc;
   color: var(--text-color);
+  display: flex;
+  justify-content: space-between;
 }
 
 .autocomplete-list li:last-child {
@@ -74,6 +87,7 @@ body {
   background-color: #f5f5f5;
 }
 
+/* Stock Details */
 .stock-details {
   margin-top: 20px;
   padding-top: 20px;
@@ -89,4 +103,55 @@ body {
 .stock-details p {
   margin: 8px 0;
   color: var(--text-color);
+}
+
+
+/* Search Button */
+.search-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 10px;
+}
+
+.search-button:hover {
+  background-color: var(--secondary-color);
+}
+
+/* Navigation Buttons */
+.nav-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin-left: 10px;
+}
+
+.nav-button:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+  border-color: #ccc;
+}
+
+.nav-button:hover:not(:disabled) {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.autocomplete-symbol {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.autocomplete-name {
+  color: #888;
 }

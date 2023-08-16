@@ -82,44 +82,57 @@ function StockPicker() {
 
   return (
     <div className="stock-picker">
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search for a stock..."
-          value={state.searchTerm}
-          onChange={(e) => dispatch(setSearchTerm(e.target.value))}
-        />
-        <button
-          onClick={handleSearch}
-          disabled={!state.selectedStock || loading}
-        >
-          Search
-        </button>
-        <button onClick={() => handleHistoryNavigation(-1)}>&lt;</button>
-        <button onClick={() => handleHistoryNavigation(1)}>&gt;</button>
-      </div>
-      <ul className="autocomplete-list">
-        {state.autocompleteResults.map((result) => (
-          <li
-            key={result.symbol}
-            onClick={() => handleAutocompleteClick(result.symbol)}
-          >
-            {result.symbol} - {result.name}
-          </li>
-        ))}
-      </ul>
-      {state.selectedStock && (
-        <div className="stock-details">
-          <h2>
-            {state.selectedStock.symbol} - {state.selectedStock.name}
-          </h2>
-          <p>{state.selectedStock.description}</p>
-          <p>Country: {state.selectedStock.country}</p>
-        </div>
-      )}
-      
+    <div className="search-bar">
+      <input
+        type="text"
+        placeholder="Search for a stock..."
+        value={state.searchTerm}
+        onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+      />
+      <button
+        className="search-button"
+        onClick={handleSearch}
+        disabled={!state.selectedStock || loading}
+      >
+        Search
+      </button>
+      <button
+        className="nav-button"
+        onClick={() => handleHistoryNavigation(-1)}
+        disabled={state.searchHistoryIndex <= 0}
+      >
+        &lt; Back
+      </button>
+      <button
+        className="nav-button"
+        onClick={() => handleHistoryNavigation(1)}
+        disabled={state.searchHistoryIndex >= state.searchHistory.length - 1}
+      >
+        Forward &gt;
+      </button>
     </div>
-  );
+    <ul className="autocomplete-list">
+      {state.autocompleteResults.map((result) => (
+        <li
+          key={result.symbol}
+          onClick={() => handleAutocompleteClick(result.symbol)}
+        >
+          <span className="autocomplete-symbol">{result.symbol}</span>
+          <span className="autocomplete-name">{result.name}</span>
+        </li>
+      ))}
+    </ul>
+    {state.selectedStock && (
+      <div className="stock-details">
+        <h2>
+          {state.selectedStock.symbol} - {state.selectedStock.name}
+        </h2>
+        <p>{state.selectedStock.description}</p>
+        <p>Country: {state.selectedStock.country}</p>
+      </div>
+    )}
+  </div>
+  )
 }
 
 export default StockPicker;
