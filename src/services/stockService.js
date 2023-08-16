@@ -15,7 +15,7 @@ async function fetchAutocompleteResults(searchTerm) {
     if (data.bestMatches) {
       return data.bestMatches.map((match) => ({
         symbol: match["1. symbol"],
-        name: match["2. name"],
+        name: match["2. name"]
       }));
     }
   } catch (error) {
@@ -37,6 +37,11 @@ async function fetchStockDetails(symbol) {
       name: data.Name,
       description: data.Description,
       country: data.Country,
+      AnalystTargetPrice: data.AnalystTargetPrice,
+      Exchange: data.Exchange,
+      Industry: data.Industry,
+      PERatio: data.PERatio,
+      MarketCapitalization: data.MarketCapitalization
     };
   } catch (error) {
     console.error("Error fetching stock details:", error);
