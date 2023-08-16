@@ -18,6 +18,7 @@ function StockPicker() {
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [selectedSymbol, SetSelectedSymbol] = useState("");
 
   useEffect(() => {
     const debouncedFetchAutocomplete = _debounce(async (searchTerm) => {
@@ -58,6 +59,7 @@ function StockPicker() {
   const handleAutocompleteClick = async (symbol) => {
     setLoading(true);
 
+    SetSelectedSymbol(symbol);
     const selectedStock = await fetchStockDetails(symbol);
 
     if (selectedStock) {
@@ -79,6 +81,10 @@ function StockPicker() {
       dispatch(setSearchTerm(state.searchHistory[newIndex]));
     }
   };
+
+  console.log("here state.selectedStock.name : ", state?.selectedStock?.name);
+  if (state?.selectedStock?.name) console.log("TRUE");
+  else console.log("FALSe");
 
   return (
     <div className="stock-picker">
@@ -122,7 +128,7 @@ function StockPicker() {
           </li>
         ))}
       </ul>
-      {state.selectedStock && (
+      {state.selectedStock && state?.selectedStock?.name && (
         <div className="stock-details">
           <h2>{state.selectedStock.name}</h2>
           <p>Description: {state.selectedStock.description}</p>
@@ -133,6 +139,11 @@ function StockPicker() {
           <p>Industry: {state.selectedStock.Industry}</p>
           <p>PE Ratio: {state.selectedStock.PERatio}</p>
           <p>Market Cap: {state.selectedStock.MarketCapitalization}</p>
+        </div>
+      )}
+      {state.selectedStock && !state?.selectedStock?.name && (
+        <div className="stock-details">
+          <h3>No Data Found for Stock Symbol "{selectedSymbol}"</h3>
         </div>
       )}
     </div>
