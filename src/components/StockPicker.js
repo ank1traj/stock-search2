@@ -5,8 +5,12 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   setSearchTerm,
   setAutocompleteResults,
-  setSelectedStock
+  setSelectedStock,
 } from "../actions/action";
+import {
+  fetchAutocompleteResults,
+  fetchStockDetails,
+} from "../services/stockService"; // Import functions from the service module
 
 function StockPicker() {
   const state = useSelector((state) => state);
@@ -14,63 +18,29 @@ function StockPicker() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchAutocomplete = async () => {
-      if (state.searchTerm.trim() === "") {
-        dispatch(setAutocompleteResults([]));
-        return;
-      }
-
+    const debouncedFetchAutocomplete = _debounce(async (searchTerm) => {
       setLoading(true);
 
-      try {
-        const response = await fetch(
-          `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${state.searchTerm}&apikey=6AVC3L6F4WXVVLNI`
-        );
-        const data = await response.json();
+      const autocompleteResults = await fetchAutocompleteResults(searchTerm);
 
-        if (data.bestMatches) {
-          const autocompleteResults = data.bestMatches.map((match) => ({
-            symbol: match["1. symbol"],
-            name: match["2. name"]
-          }));
-
-          dispatch(setAutocompleteResults(autocompleteResults));
-        }
-      } catch (error) {
-        console.error("Error fetching autocomplete data:", error);
-      }
-
+      dispatch(setAutocompleteResults(autocompleteResults));
       setLoading(false);
-    };
+    }, 300);
 
-    const debouncedFetchAutocomplete = _debounce(fetchAutocomplete, 300);
-
-    debouncedFetchAutocomplete(); // Call the debounced function
+    debouncedFetchAutocomplete(state.searchTerm);
 
     return () => {
-      debouncedFetchAutocomplete.cancel(); // Cancel the debounce function on unmount
+      debouncedFetchAutocomplete.cancel();
     };
   }, [state.searchTerm, dispatch]);
 
   const handleAutocompleteClick = async (symbol) => {
     setLoading(true);
 
-    try {
-      const response = await fetch(
-        `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=6AVC3L6F4WXVVLNI`
-      );
-      const data = await response.json();
+    const selectedStock = await fetchStockDetails(symbol);
 
-      const selectedStock = {
-        symbol: data.Symbol,
-        name: data.Name,
-        description: data.Description,
-        country: data.Country
-      };
-
+    if (selectedStock) {
       dispatch(setSelectedStock(selectedStock));
-    } catch (error) {
-      console.error("Error fetching stock details:", error);
     }
 
     setLoading(false);
@@ -82,28 +52,18 @@ function StockPicker() {
     if (state.selectedStock) {
       setLoading(true);
 
-      try {
-        const response = await fetch(
-          `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${state.selectedStock.symbol}&apikey=6AVC3L6F4WXVVLNI`
-        );
-        const data = await response.json();
+      const selectedStockDetails = await fetchStockDetails(
+        state.selectedStock.symbol
+      );
 
-        const selectedStockDetails = {
-          symbol: data.Symbol,
-          name: data.Name,
-          description: data.Description,
-          country: data.Country
-        };
-
+      if (selectedStockDetails) {
         dispatch(setSelectedStock(selectedStockDetails));
-      } catch (error) {
-        console.error("Error fetching selected stock details:", error);
       }
 
       setLoading(false);
     }
   };
-
+  
   return (
     <div className="stock-picker">
       <div className="search-bar">
