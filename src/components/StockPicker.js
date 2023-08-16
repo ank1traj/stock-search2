@@ -6,6 +6,8 @@ import {
   setSearchTerm,
   setAutocompleteResults,
   setSelectedStock,
+  setSearchHistory,
+  setSearchHistoryIndex,
 } from "../actions/action";
 import {
   fetchAutocompleteResults,
@@ -34,20 +36,6 @@ function StockPicker() {
     };
   }, [state.searchTerm, dispatch]);
 
-  const handleAutocompleteClick = async (symbol) => {
-    setLoading(true);
-
-    const selectedStock = await fetchStockDetails(symbol);
-
-    if (selectedStock) {
-      dispatch(setSelectedStock(selectedStock));
-    }
-
-    setLoading(false);
-    dispatch(setAutocompleteResults([]));
-    dispatch(setSearchTerm(""));
-  };
-
   const handleSearch = async () => {
     if (state.selectedStock) {
       setLoading(true);
@@ -58,12 +46,40 @@ function StockPicker() {
 
       if (selectedStockDetails) {
         dispatch(setSelectedStock(selectedStockDetails));
+        const updatedHistory = [...state.searchHistory, state.searchTerm];
+        dispatch(setSearchHistory(updatedHistory));
+        dispatch(setSearchHistoryIndex(updatedHistory.length - 1));
       }
 
       setLoading(false);
     }
   };
-  
+
+  const handleAutocompleteClick = async (symbol) => {
+    setLoading(true);
+
+    const selectedStock = await fetchStockDetails(symbol);
+
+    if (selectedStock) {
+      dispatch(setSelectedStock(selectedStock));
+      const updatedHistory = [...state.searchHistory, state.searchTerm];
+      dispatch(setSearchHistory(updatedHistory));
+      dispatch(setSearchHistoryIndex(updatedHistory.length - 1));
+    }
+
+    setLoading(false);
+    dispatch(setAutocompleteResults([]));
+    dispatch(setSearchTerm(""));
+  };
+
+  const handleHistoryNavigation = (indexDelta) => {
+    const newIndex = state.searchHistoryIndex + indexDelta;
+    if (newIndex >= 0 && newIndex < state.searchHistory.length) {
+      dispatch(setSearchHistoryIndex(newIndex));
+      dispatch(setSearchTerm(state.searchHistory[newIndex]));
+    }
+  };
+
   return (
     <div className="stock-picker">
       <div className="search-bar">
@@ -79,6 +95,8 @@ function StockPicker() {
         >
           Search
         </button>
+        <button onClick={() => handleHistoryNavigation(-1)}>&lt;</button>
+        <button onClick={() => handleHistoryNavigation(1)}>&gt;</button>
       </div>
       <ul className="autocomplete-list">
         {state.autocompleteResults.map((result) => (
@@ -99,6 +117,7 @@ function StockPicker() {
           <p>Country: {state.selectedStock.country}</p>
         </div>
       )}
+      
     </div>
   );
 }
