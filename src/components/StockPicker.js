@@ -57,7 +57,7 @@ function StockPicker() {
 
     try {
       const response = await fetch(
-        `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=YOUR_API_KEY`
+        `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=6AVC3L6F4WXVVLNI`
       );
       const data = await response.json();
 
