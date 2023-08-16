@@ -1,5 +1,5 @@
 // stockService.js
-const API_KEY = "XGY476OYU14V6G2G"; // Replace with your actual API key
+const API_KEY = "6AVC3L6F4WXVVLNI"; // Replace with your actual API key
 
 async function fetchAutocompleteResults(searchTerm) {
   if (searchTerm.trim() === "") {
