@@ -2,10 +2,10 @@
 
 const initialState = {
   searchTerm: "",
-  selectedStock: null,
+  selectedStockDetails: null,
   autocompleteResults: [],
   searchHistory: [],
-  searchHistoryIndex: -1,
+  searchHistoryIndex: -1
 };
 
 const reducer = (state = initialState, action) => {
@@ -14,8 +14,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, searchTerm: action.payload };
     case "SET_AUTOCOMPLETE_RESULTS":
       return { ...state, autocompleteResults: action.payload };
-    case "SET_SELECTED_STOCK":
-      return { ...state, selectedStock: action.payload };
+    case "SET_SELECTED_STOCK_DETAILS":
+      return { ...state, selectedStockDetails: action.payload };
     case "SET_SEARCH_HISTORY":
       return { ...state, searchHistory: action.payload };
     case "SET_SEARCH_HISTORY_INDEX":

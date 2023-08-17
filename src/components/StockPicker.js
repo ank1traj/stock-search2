@@ -5,14 +5,14 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   setSearchTerm,
   setAutocompleteResults,
-  setSelectedStock,
+  setSelectedStockDetails,
   setSearchHistory,
-  setSearchHistoryIndex,
+  setSearchHistoryIndex
 } from "../actions/action";
 import {
   fetchAutocompleteResults,
-  fetchStockDetails,
-} from "../services/stockService"; // Import functions from the service module
+  fetchStockDetails
+} from "../services/stockService";
 
 function StockPicker() {
   const state = useSelector((state) => state);
@@ -36,32 +36,44 @@ function StockPicker() {
     };
   }, [state.searchTerm, dispatch]);
 
+  /**
+   * handleSearch fetches the details of the input stock
+   * on click of the button
+   * Updates the search History as well for navigation
+   */
   const handleSearch = async () => {
-    if (state.selectedStock) {
+    if (state.searchTerm) {
       setLoading(true);
 
-      const selectedStockDetails = await fetchStockDetails(
-        state.selectedStock.symbol
+      const fetchedSelectedStockDetails = await fetchStockDetails(
+        state.searchTerm
       );
 
-      if (selectedStockDetails) {
-        dispatch(setSelectedStock(selectedStockDetails));
+      if (fetchedSelectedStockDetails) {
+        dispatch(setSelectedStockDetails(fetchedSelectedStockDetails));
         const updatedHistory = [...state.searchHistory, state.searchTerm];
         dispatch(setSearchHistory(updatedHistory));
         dispatch(setSearchHistoryIndex(updatedHistory.length - 1));
       }
 
       setLoading(false);
+      dispatch(setAutocompleteResults([]));
+      dispatch(setSearchTerm(""));
     }
   };
 
+  /**
+   * handleAutocompleteClick the stock details for selected symbol and
+   * clears the search term and autocomplete list
+   * @param {*} symbol - selected stock symbol from the list
+   */
   const handleAutocompleteClick = async (symbol) => {
     setLoading(true);
 
-    const selectedStock = await fetchStockDetails(symbol);
+    const fetchedSelectedStockDetails = await fetchStockDetails(symbol);
 
-    if (selectedStock) {
-      dispatch(setSelectedStock(selectedStock));
+    if (fetchedSelectedStockDetails) {
+      dispatch(setSelectedStockDetails(fetchedSelectedStockDetails));
       const updatedHistory = [...state.searchHistory, state.searchTerm];
       dispatch(setSearchHistory(updatedHistory));
       dispatch(setSearchHistoryIndex(updatedHistory.length - 1));
@@ -72,6 +84,11 @@ function StockPicker() {
     dispatch(setSearchTerm(""));
   };
 
+  /**
+   * handleHistoryNavigation handles the navigation for forward and backward items
+   * and sets the search term to next and previous seearch terms respectively
+   * @param {*} indexDelta - index for the current stock
+   */
   const handleHistoryNavigation = (indexDelta) => {
     const newIndex = state.searchHistoryIndex + indexDelta;
     if (newIndex >= 0 && newIndex < state.searchHistory.length) {
@@ -82,57 +99,90 @@ function StockPicker() {
 
   return (
     <div className="stock-picker">
-    <div className="search-bar">
-      <input
-        type="text"
-        placeholder="Search for a stock..."
-        value={state.searchTerm}
-        onChange={(e) => dispatch(setSearchTerm(e.target.value))}
-      />
-      <button
-        className="search-button"
-        onClick={handleSearch}
-        disabled={!state.selectedStock || loading}
-      >
-        Search
-      </button>
-      <button
-        className="nav-button"
-        onClick={() => handleHistoryNavigation(-1)}
-        disabled={state.searchHistoryIndex <= 0}
-      >
-        &lt; Back
-      </button>
-      <button
-        className="nav-button"
-        onClick={() => handleHistoryNavigation(1)}
-        disabled={state.searchHistoryIndex >= state.searchHistory.length - 1}
-      >
-        Forward &gt;
-      </button>
-    </div>
-    <ul className="autocomplete-list">
-      {state.autocompleteResults.map((result) => (
-        <li
-          key={result.symbol}
-          onClick={() => handleAutocompleteClick(result.symbol)}
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search for a stock..."
+          value={state.searchTerm}
+          onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+        />
+        <button
+          className="search-button"
+          onClick={handleSearch}
+          disabled={!state.searchTerm || loading}
         >
-          <span className="autocomplete-symbol">{result.symbol}</span>
-          <span className="autocomplete-name">{result.name}</span>
-        </li>
-      ))}
-    </ul>
-    {state.selectedStock && (
-      <div className="stock-details">
-        <h2>
-          {state.selectedStock.symbol} - {state.selectedStock.name}
-        </h2>
-        <p>{state.selectedStock.description}</p>
-        <p>Country: {state.selectedStock.country}</p>
+          Search
+        </button>
+        <button
+          className="nav-button"
+          onClick={() => handleHistoryNavigation(-1)}
+          disabled={state.searchHistoryIndex <= 0}
+        >
+          &lt; Back
+        </button>
+        <button
+          className="nav-button"
+          onClick={() => handleHistoryNavigation(1)}
+          disabled={state.searchHistoryIndex >= state.searchHistory.length - 1}
+        >
+          Forward &gt;
+        </button>
       </div>
-    )}
-  </div>
-  )
+      <ul className="autocomplete-list">
+        {state.autocompleteResults.map((result) => (
+          <li
+            key={result.symbol}
+            onClick={() => handleAutocompleteClick(result.symbol)}
+          >
+            <span className="autocomplete-symbol">{result.symbol}</span>
+            <span className="autocomplete-name">{result.name}</span>
+          </li>
+        ))}
+      </ul>
+      {state?.selectedStockDetails && state?.selectedStockDetails?.name && (
+        <div className="stock-details">
+          <h2>{state.selectedStockDetails.name}</h2>
+          <p>
+            <b>Description: </b>
+            {state.selectedStockDetails.description}
+          </p>
+          <p>
+            <b>Symbol: </b>
+            {state.selectedStockDetails.symbol}
+          </p>
+          <p>
+            <b>Country: </b>
+            {state.selectedStockDetails.country}
+          </p>
+          <p>
+            <b>Analyst Target Price: </b>
+            {state.selectedStockDetails.AnalystTargetPrice}
+          </p>
+          <p>
+            <b>Exchange: </b>
+            {state.selectedStockDetails.Exchange}
+          </p>
+          <p>
+            <b>Industry: </b>
+            {state.selectedStockDetails.Industry}
+          </p>
+          <p>
+            <b>PE Ratio: </b>
+            {state.selectedStockDetails.PERatio}
+          </p>
+          <p>
+            <b>Market Cap: </b>
+            {state.selectedStockDetails.MarketCapitalization}
+          </p>
+        </div>
+      )}
+      {state?.selectedStockDetails && !state?.selectedStockDetails?.name && (
+        <div className="stock-details">
+          <h3>Stock data not found</h3>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default StockPicker;
