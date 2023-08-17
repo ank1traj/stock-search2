@@ -16,7 +16,7 @@ describe("App Component", () => {
       </Provider>
     );
 
-    const appTitle = getByText("Stock Picker Widget");
+    const appTitle = getByText("Stock Insight");
     expect(appTitle).toBeInTheDocument();
   });
 });
