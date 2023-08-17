@@ -1,6 +1,12 @@
 // stockService.js
-const API_KEY = "6AVC3L6F4WXVVLNI"; // Replace with your actual API key
+const API_KEY = "demo"; // Replace with your actual API key
 
+/**
+ * fetchAutocompleteResults fetches the list of data through api call
+ * @param {*} searchTerm - the search bar input text by user
+ * @returns data for the autocomplete list i.e symbol and name of stock
+ * based on the searchTerm input by the user
+ */
 async function fetchAutocompleteResults(searchTerm) {
   if (searchTerm.trim() === "") {
     return [];
@@ -25,6 +31,11 @@ async function fetchAutocompleteResults(searchTerm) {
   return [];
 }
 
+/**
+ * fetchStockDetails fetches stock data using API call
+ * @param {*} symbol - stock symbol
+ * @returns stock details for the symbol provided
+ */
 async function fetchStockDetails(symbol) {
   try {
     const response = await fetch(

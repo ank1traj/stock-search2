@@ -12,13 +12,12 @@ import {
 import {
   fetchAutocompleteResults,
   fetchStockDetails
-} from "../services/stockService"; // Import functions from the service module
+} from "../services/stockService";
 
 function StockPicker() {
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const [selectedSymbol, SetSelectedSymbol] = useState("");
 
   useEffect(() => {
     const debouncedFetchAutocomplete = _debounce(async (searchTerm) => {
@@ -38,16 +37,16 @@ function StockPicker() {
   }, [state.searchTerm, dispatch]);
 
   /**
-   * handleSearch fetches the details of the slected stock
-   * and adds it to redux state
+   * handleSearch fetches the details of the input stock
+   * on click of the button
    * Updates the search History as well for navigation
    */
   const handleSearch = async () => {
-    if (state.selectedStock) {
+    if (state.searchTerm) {
       setLoading(true);
 
       const fetchedSelectedStockDetails = await fetchStockDetails(
-        state.selectedStock.symbol
+        state.searchTerm
       );
 
       if (fetchedSelectedStockDetails) {
@@ -58,6 +57,8 @@ function StockPicker() {
       }
 
       setLoading(false);
+      dispatch(setAutocompleteResults([]));
+      dispatch(setSearchTerm(""));
     }
   };
 
@@ -69,7 +70,6 @@ function StockPicker() {
   const handleAutocompleteClick = async (symbol) => {
     setLoading(true);
 
-    SetSelectedSymbol(symbol);
     const fetchedSelectedStockDetails = await fetchStockDetails(symbol);
 
     if (fetchedSelectedStockDetails) {
@@ -109,7 +109,7 @@ function StockPicker() {
         <button
           className="search-button"
           onClick={handleSearch}
-          disabled={!state.selectedStock || loading}
+          disabled={!state.searchTerm || loading}
         >
           Search
         </button>
@@ -178,7 +178,7 @@ function StockPicker() {
       )}
       {state?.selectedStockDetails && !state?.selectedStockDetails?.name && (
         <div className="stock-details">
-          <h3>No Data Found for Stock Symbol "{selectedSymbol}"</h3>
+          <h3>Stock data not found</h3>
         </div>
       )}
     </div>

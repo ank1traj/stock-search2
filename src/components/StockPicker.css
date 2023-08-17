@@ -105,7 +105,6 @@ body {
   color: var(--text-color);
 }
 
-
 /* Search Button */
 .search-button {
   padding: 10px 15px;
@@ -121,6 +120,12 @@ body {
 
 .search-button:hover {
   background-color: var(--secondary-color);
+}
+
+.search-button:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+  border-color: #ccc;
 }
 
 /* Navigation Buttons */
@@ -206,7 +211,7 @@ body {
   .stock-picker {
     padding: 20px;
   }
-  
+
   .search-bar {
     flex-direction: row;
     align-items: center;
@@ -223,5 +228,3 @@ body {
     margin: 0 10px;
   }
 }
-
-
