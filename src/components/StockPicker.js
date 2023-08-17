@@ -60,10 +60,10 @@ function StockPicker() {
     setLoading(true);
 
     SetSelectedSymbol(symbol);
-    const selectedStock = await fetchStockDetails(symbol);
+    const fetchedSelectedStockDetails = await fetchStockDetails(symbol);
 
-    if (selectedStock) {
-      dispatch(setSelectedStockDetails(selectedStock));
+    if (fetchedSelectedStockDetails) {
+      dispatch(setSelectedStockDetails(fetchedSelectedStockDetails));
       const updatedHistory = [...state.searchHistory, state.searchTerm];
       dispatch(setSearchHistory(updatedHistory));
       dispatch(setSearchHistoryIndex(updatedHistory.length - 1));
