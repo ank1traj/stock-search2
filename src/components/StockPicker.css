@@ -30,7 +30,6 @@ body {
 }
 
 .search-bar input {
-  padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -103,6 +102,7 @@ body {
 .stock-details p {
   margin: 8px 0;
   color: var(--text-color);
+  text-align: left;
 }
 
 /* Search Button */
@@ -197,6 +197,7 @@ body {
 
   .search-bar input {
     margin: 0 10px 0 0;
+    padding: 10px;
   }
 
   .search-button,
@@ -220,6 +221,7 @@ body {
   .search-bar input {
     width: auto;
     margin: 0 10px 0 0;
+    padding: 10px;
   }
 
   .search-button,
