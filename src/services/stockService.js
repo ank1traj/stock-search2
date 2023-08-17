@@ -1,5 +1,5 @@
 // stockService.js
-const API_KEY = "demo"; // Replace with your actual API key
+const API_KEY = "6AVC3L6F4WXVVLNI"; // Replace with your actual API key
 
 /**
  * fetchAutocompleteResults fetches the list of data through api call

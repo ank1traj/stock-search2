@@ -5,6 +5,8 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
+    "@testing-library/jest-dom": "5.16.5",
+    "@testing-library/react": "14.0.0",
     "csbbust": "1.0.1",
     "loader-utils": "3.2.1",
     "lodash": "^4.17.21",
