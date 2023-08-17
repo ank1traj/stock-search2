@@ -11,7 +11,7 @@ function App() {
   return (
     <Provider store={store}>
       <div className="App">
-        <h1>Stock Picker Widget</h1>
+        <h1>Stock Insight</h1>
         <StockPicker />
       </div>
     </Provider>
