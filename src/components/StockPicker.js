@@ -37,6 +37,11 @@ function StockPicker() {
     };
   }, [state.searchTerm, dispatch]);
 
+  /**
+   * handleSearch fetches the details of the slected stock
+   * and adds it to redux state
+   * Updates the search History as well for navigation
+   */
   const handleSearch = async () => {
     if (state.selectedStock) {
       setLoading(true);
@@ -56,6 +61,11 @@ function StockPicker() {
     }
   };
 
+  /**
+   * handleAutocompleteClick the stock details for selected symbol and
+   * clears the search term and autocomplete list
+   * @param {*} symbol - selected stock symbol from the list
+   */
   const handleAutocompleteClick = async (symbol) => {
     setLoading(true);
 
@@ -74,6 +84,11 @@ function StockPicker() {
     dispatch(setSearchTerm(""));
   };
 
+  /**
+   * handleHistoryNavigation handles the navigation for forward and backward items
+   * and sets the search term to next and previous seearch terms respectively
+   * @param {*} indexDelta - index for the current stock
+   */
   const handleHistoryNavigation = (indexDelta) => {
     const newIndex = state.searchHistoryIndex + indexDelta;
     if (newIndex >= 0 && newIndex < state.searchHistory.length) {
@@ -81,10 +96,6 @@ function StockPicker() {
       dispatch(setSearchTerm(state.searchHistory[newIndex]));
     }
   };
-
-  console.log("here state.selectedStock.name : ", state?.selectedStock?.name);
-  if (state?.selectedStock?.name) console.log("TRUE");
-  else console.log("FALSe");
 
   return (
     <div className="stock-picker">
@@ -128,23 +139,44 @@ function StockPicker() {
           </li>
         ))}
       </ul>
-      {state.selectedStockDetails && state?.selectedStockDetails?.name && (
+      {state?.selectedStockDetails && state?.selectedStockDetails?.name && (
         <div className="stock-details">
           <h2>{state.selectedStockDetails.name}</h2>
-          <p>Description: {state.selectedStockDetails.description}</p>
-          <p>Symbol: {state.selectedStockDetails.symbol}</p>
-          <p>Country: {state.selectedStockDetails.country}</p>
           <p>
-            Analyst Target Price:{" "}
+            <b>Description: </b>
+            {state.selectedStockDetails.description}
+          </p>
+          <p>
+            <b>Symbol: </b>
+            {state.selectedStockDetails.symbol}
+          </p>
+          <p>
+            <b>Country: </b>
+            {state.selectedStockDetails.country}
+          </p>
+          <p>
+            <b>Analyst Target Price: </b>
             {state.selectedStockDetails.AnalystTargetPrice}
           </p>
-          <p>Exchange: {state.selectedStockDetails.Exchange}</p>
-          <p>Industry: {state.selectedStockDetails.Industry}</p>
-          <p>PE Ratio: {state.selectedStockDetails.PERatio}</p>
-          <p>Market Cap: {state.selectedStockDetails.MarketCapitalization}</p>
+          <p>
+            <b>Exchange: </b>
+            {state.selectedStockDetails.Exchange}
+          </p>
+          <p>
+            <b>Industry: </b>
+            {state.selectedStockDetails.Industry}
+          </p>
+          <p>
+            <b>PE Ratio: </b>
+            {state.selectedStockDetails.PERatio}
+          </p>
+          <p>
+            <b>Market Cap: </b>
+            {state.selectedStockDetails.MarketCapitalization}
+          </p>
         </div>
       )}
-      {state.selectedStockDetails && !state?.selectedStockDetails?.name && (
+      {state?.selectedStockDetails && !state?.selectedStockDetails?.name && (
         <div className="stock-details">
           <h3>No Data Found for Stock Symbol "{selectedSymbol}"</h3>
         </div>
