@@ -31,7 +31,14 @@ function StockPicker() {
 
     debouncedFetchAutocomplete(state.searchTerm);
 
+    // Set up an interval to refresh data every X milliseconds
+    const refreshInterval = setInterval(() => {
+      debouncedFetchAutocomplete(state.searchTerm);
+    }, 60000); // Refresh every 60 seconds (adjust as needed)
+
+
     return () => {
+      clearInterval(refreshInterval); // Clean up the interval when the component unmounts
       debouncedFetchAutocomplete.cancel();
     };
   }, [state.searchTerm, dispatch]);
